@@ -1,0 +1,10 @@
+{
+    "files.exclude": {
+        ".cljs_node_repl": true,
+        "target/": true,
+        "dev/": true,
+        ".lein-repl-history": true,
+        ".rebel_readline_history": true,
+        "figwheel_server.log": true,
+    }
+}
