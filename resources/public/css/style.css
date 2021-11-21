@@ -1,33 +1,33 @@
 html {
     overflow: hidden;
     height: 100%;
-    background-color: white;
 }
 
 body {
+    align-items: center;
+    background-color: white;
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    margin: 0px;
     user-select: none;
     -webkit-user-select: none;
-    margin: 0px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 #app {
     display: grid;
+    gap: 4px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
-    user-select: none;
-    gap: 4px;
-    width: 100vmin;
     height: 100vmin;
+    user-select: none;
+    width: 100vmin;
 }
 
 #app button {
-    border: 0;
-    border-radius: 5px;
     background: #4676D7;
+    border-radius: 5px;
+    border: 0;
     color: #fff;
     font-size: 24px;
 }
