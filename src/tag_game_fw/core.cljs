@@ -1,6 +1,21 @@
 (ns tag-game-fw.core)
 
-(defonce app-state (atom (shuffle [1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 0])))
+(defn check-valid-tags [xs]
+  (->>
+   (for [x (range (count xs))
+         y (range (inc x) (count xs))]
+     (> (get xs x) (get xs y)))
+   (reduce (fn [x c] (if c (inc x) x)) 0)
+   (even?)))
+
+(defn gen-valid-tag-game []
+  (->>
+   (repeat 0)
+   (map (fn [] (shuffle (range 16))))
+   (filter check-valid-tags)
+   (first)))
+
+(defonce app-state (atom (gen-valid-tag-game)))
 
 (defn try-swap [i x y]
   (let [target-pos (+ i x (* 4 y))
