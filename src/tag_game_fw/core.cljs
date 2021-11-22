@@ -10,8 +10,7 @@
 
 (defn gen-valid-tag-game []
   (->>
-   (repeat 0)
-   (map (fn [] (shuffle (range 16))))
+   (repeatedly (fn [] (shuffle (range 16))))
    (filter check-valid-tags)
    (first)))
 
