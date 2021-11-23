@@ -14,7 +14,7 @@ body {
     -webkit-user-select: none;
 }
 
-#app {
+#game-field {
     display: grid;
     gap: 4px;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -24,7 +24,7 @@ body {
     width: 100vmin;
 }
 
-#app button {
+#game-field button {
     background: #4676D7;
     border-radius: 5px;
     border: 0;
@@ -32,10 +32,10 @@ body {
     font-size: 24px;
 }
 
-#app button:hover {
+#game-field > button:hover {
     background: #1d49aa;
 }
 
-#app button:disabled {
+#game-field > button.disabled {
     visibility: hidden;
 }

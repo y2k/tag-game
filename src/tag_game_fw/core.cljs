@@ -1,4 +1,8 @@
-(ns tag-game-fw.core)
+(ns tag-game-fw.core
+  (:refer-clojure :exclude [atom])
+  (:require [freactive.core :as r]
+            [freactive.dom :as dom])
+  (:require-macros [freactive.macros :refer [rx]]))
 
 (defn check-valid-tags [xs]
   (->>
@@ -14,7 +18,7 @@
    (filter check-valid-tags)
    (first)))
 
-(defonce app-state (atom (gen-valid-tag-game)))
+(defonce app-state (r/atom (gen-valid-tag-game)))
 
 (defn try-swap [i x y]
   (let [target-pos (+ i x (* 4 y))
@@ -29,19 +33,22 @@
           (assoc i target))))
       nil)))
 
-(defn handleclick [i callback]
+(defn handleclick [i]
   (try-swap i -1 0)
   (try-swap i 1 0)
   (try-swap i 0 -1)
-  (try-swap i 0 1)
-  (callback))
+  (try-swap i 0 1))
 
-(defn render []
-  (doseq [i (range (count @app-state))]
-    (let [x (get @app-state i)
-          b (.getElementById js/document (str "b" i))]
-      (set! (.-onclick b) (fn [] (handleclick i render)))
-      (set! (.-innerText b) (str x))
-      (set! (.-visibility (.-style b)) (if (= x 0) "hidden" "visible")))))
+(defn view-item [i x]
+  [:button
+   {:class (if (= x 0) "disabled" "enable")
+    :on-click (fn [] (handleclick i))} (str x)])
 
-(render)
+(defn view []
+  (let [db (r/cursor app-state identity)]
+    (rx
+     (into
+      [:div {:id "game-field"}]
+      (map-indexed view-item @db)))))
+
+(dom/mount! (.getElementById js/document "root") (view))
