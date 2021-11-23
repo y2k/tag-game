@@ -18,37 +18,39 @@
    (filter check-valid-tags)
    (first)))
 
+(defn try-swap [i x y db]
+  (let [target-pos (+ i x (* 4 y))
+        target (get db target-pos)]
+    (if (= 0 target)
+      (->
+       db
+       (assoc target-pos (get db i))
+       (assoc i target))
+      db)))
+
 (defonce app-state (r/atom (gen-valid-tag-game)))
 
-(defn try-swap [i x y]
-  (let [target-pos (+ i x (* 4 y))
-        target (get @app-state target-pos)]
-    (if (= 0 target)
-      (swap!
-       app-state
-       (fn [state]
-         (->
-          state
-          (assoc target-pos (get state i))
-          (assoc i target))))
-      nil)))
-
 (defn handleclick [i]
-  (try-swap i -1 0)
-  (try-swap i 1 0)
-  (try-swap i 0 -1)
-  (try-swap i 0 1))
+  (swap!
+   app-state
+   #(->>
+     %
+     (try-swap i -1 0)
+     (try-swap i 1 0)
+     (try-swap i 0 -1)
+     (try-swap i 0 1))))
 
 (defn view-item [i x]
   [:button
    {:class (if (= x 0) "disabled" "enable")
     :on-click (fn [] (handleclick i))} (str x)])
 
-(defn view []
-  (let [db (r/cursor app-state identity)]
-    (rx
-     (into
-      [:div {:id "game-field"}]
-      (map-indexed view-item @db)))))
+(defn view [db]
+  (into
+   [:div {:id "game-field"}]
+   (map-indexed view-item db)))
 
-(dom/mount! (.getElementById js/document "root") (view))
+(dom/mount!
+ (.getElementById js/document "root")
+ (let [db (r/cursor app-state identity)]
+   (rx (view @db))))
