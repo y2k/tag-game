@@ -8,9 +8,12 @@
   (->>
    (for [x (range (count xs))
          y (range (inc x) (count xs))]
-     (> (get xs x) (get xs y)))
+     (and
+      (> (get xs x) 0)
+      (> (get xs y) 0)
+      (> (get xs x) (get xs y))))
    (reduce (fn [x c] (if c (inc x) x)) 0)
-   (+ 1 (.indexOf xs 0))
+   (+ 1 (quot (.indexOf xs 0) 4))
    (even?)))
 
 (defn gen-valid-tag-game []
