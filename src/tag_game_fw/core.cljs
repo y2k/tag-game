@@ -10,6 +10,7 @@
          y (range (inc x) (count xs))]
      (> (get xs x) (get xs y)))
    (reduce (fn [x c] (if c (inc x) x)) 0)
+   (+ 1 (.indexOf xs 0))
    (even?)))
 
 (defn gen-valid-tag-game []

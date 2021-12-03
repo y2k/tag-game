@@ -16,7 +16,7 @@ body {
 
 #game-field {
     display: grid;
-    gap: 4px;
+    gap: 0.9vmin;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
     height: 100vmin;
@@ -25,11 +25,12 @@ body {
 }
 
 #game-field button {
+    margin: 0px;
     background: #4676D7;
     border-radius: 5px;
     border: 0;
     color: #fff;
-    font-size: 24px;
+    font-size: 5vmin;
 }
 
 #game-field > button:hover {
