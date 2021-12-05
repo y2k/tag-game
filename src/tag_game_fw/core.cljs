@@ -1,48 +1,21 @@
 (ns tag-game-fw.core
   (:refer-clojure :exclude [atom])
   (:require [freactive.core :as r]
-            [freactive.dom :as dom])
+            [freactive.dom :as dom]
+            [tag-game-fw.domain :as d])
   (:require-macros [freactive.macros :refer [rx]]))
 
-(defn check-valid-tags [xs]
-  (->>
-   (for [x (range (count xs))
-         y (range (inc x) (count xs))]
-     (and
-      (> (get xs x) 0)
-      (> (get xs y) 0)
-      (> (get xs x) (get xs y))))
-   (reduce (fn [x c] (if c (inc x) x)) 0)
-   (+ 1 (quot (.indexOf xs 0) 4))
-   (even?)))
-
-(defn gen-valid-tag-game []
-  (->>
-   (repeatedly (fn [] (shuffle (range 16))))
-   (filter check-valid-tags)
-   (first)))
-
-(defn try-swap [i x y db]
-  (let [target-pos (+ i x (* 4 y))
-        target (get db target-pos)]
-    (if (= 0 target)
-      (->
-       db
-       (assoc target-pos (get db i))
-       (assoc i target))
-      db)))
-
-(defonce app-state (r/atom (gen-valid-tag-game)))
+(defonce app-state (r/atom (d/gen-valid-tag-game)))
 
 (defn handleclick [i]
   (swap!
    app-state
    #(->>
      %
-     (try-swap i -1 0)
-     (try-swap i 1 0)
-     (try-swap i 0 -1)
-     (try-swap i 0 1))))
+     (d/try-swap i -1 0)
+     (d/try-swap i 1 0)
+     (d/try-swap i 0 -1)
+     (d/try-swap i 0 1))))
 
 (defn view-item [i x]
   [:button
