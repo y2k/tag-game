@@ -1,5 +1,6 @@
 (ns core-test
-  (:require [clojure.test :refer :all]))
+  (:require [clojure.test :refer :all]
+            [clojure.data :as data]))
 
 (def a1 [:div
          [:input "2"]])
@@ -14,60 +15,154 @@
 (def log (atom []))
 
 (defn remove-attr [ctx k]
-  (swap! log (fn [l] (conj l (str "remove-attr[" ctx "][" k "]")))))
+  (swap! log (fn [l] (conj l (str "remove-attr(#" (:id ctx) " " k ")")))))
 (defn set-attr [ctx k v]
-  (swap! log (fn [l] (conj l (str "set-attr[" ctx "][" k "=" v "]")))))
+  (swap! log (fn [l] (conj l (str "set-attr(#" (:id ctx) " " k "=" v ")")))))
 (defn remove-node [ctx i]
-  (swap! log (fn [l] (conj l (str "remove-node[" ctx "][index=" i "]")))))
-(defn create-node []
-  (swap! log (fn [l] (conj l "create-node"))))
+  (swap! log (fn [l] (conj l (str "remove-node(#" (:id ctx) " at " i ")")))))
+(defn create-node [name child-ctx]
+  (swap! log (fn [l] (conj l (str "create-node(" name "#" (:id child-ctx) ")"))))
+  (str name "#" (:id child-ctx)))
+(defn attach-node [ctx i node]
+  (swap! log (fn [l] (conj l (str "attach-node(" node " to #" (:id ctx) ")")))))
 
-(defn diff-nodes [a b ctx]
-  (if (= (get a 0) (get b 0))
+(defn get-tag-name [n] (get n 0))
+(defn create-child-ctx [parent-ctx i] {:id (str (:id parent-ctx) i)})
+
+(defn diff-nodes-inner [a b ctx i]
+  (if (= (get-tag-name a) (get-tag-name b))
     (let [a-attr (try-get-attrs a)
           b-attr (try-get-attrs b)]
-      (if (= a-attr b-attr)
-        (comment FIXME)
-        (let [[rem-attrs add-attrs] (diff a-attr b-attr)]
+      (if (not (= a-attr b-attr))
+        (let [[rem-attrs add-attrs] (data/diff a-attr b-attr)
+              child-ctx (create-child-ctx ctx i)]
           (doseq [k (keys rem-attrs)]
-            (remove-attr ctx k))
+            (remove-attr child-ctx k))
           (doseq [k (keys add-attrs)]
-            (set-attr ctx k (get add-attrs k)))
-          (comment FIXME))))
-    (do
-      (remove-node ctx)
-      (create-node ctx (get a 0))
-      (comment FIXME)))
+            (set-attr child-ctx k (get add-attrs k))))))
+    (if (nil? b)
+      (remove-node ctx i)
+      (do
+        (if (not (nil? a)) (remove-node ctx i))
+        (let [child-ctx (create-child-ctx ctx i)
+              node (create-node (get-tag-name b) child-ctx)]
+          (attach-node ctx i node)
+          (let [add-attrs (try-get-attrs b)]
+            (doseq [k (keys add-attrs)]
+              (set-attr child-ctx k (get add-attrs k))))))))
+  (doseq [child-i (range 2 (max (count a) (count b)))]
+    (diff-nodes-inner
+     (get a child-i)
+     (get b child-i)
+     (create-child-ctx ctx i)
+     (- child-i 2))))
 
-  (doseq [i (range 2 (count a))]
-    (comment "FIXME"))
-  (doseq [i (range (count b) (count a))]
-    (remove-node ctx (- i 2)))
-
-  (comment FIXME))
+(defn diff-nodes [a b] (diff-nodes-inner a b {:id "root"} 0))
 
 (comment
-  @log
 
-  (reset! log [])
-  (diff-nodes
-   [:div {:attr "value"} [:h1 "h1.text"] [:h2 "h2.text"]]
-   [:div {:text "hello"} [:h1 "h1.text"]]
-   {})
+  (run-log
+   (diff-nodes
+    [:div {} [:span {} [:a {:href "https://g.com"}]]]
+    [:div {} [:span {} [:a {:href "https://y.ru"}]]]))
 
-  (reset! log [])
-  (diff-nodes
-   [:div {:text "hello"} [:h1 "h1.text"]]
-   [:div {:attr "value"} [:h1 "h1.text"] [:h2 "h2.text"]]
-   {})
+  (run-log
+   (diff-nodes
+    [:div {}]
+    [:div {:attr "hello"}]))
 
-  (diff-nodes
-   [:div {:text "hello"} [:h1 "h1.text"] [:h2 "h2.text"]]
-   [:div {:attr "value"} [:h2 "h2.text"] [:h3 "h3.text"]]
-   {})
-;; -- end
-  )
+  (run-log
+   (diff-nodes
+    [:div {:attr "hello"}]
+    [:div {}]))
 
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 0))))
+  (run-log
+   (diff-nodes
+    [:div {:attr "hello"}]
+    [:div {:attr "hello"}]))
+
+  (run-log
+   (diff-nodes
+    [:div {:attr "hello"}]
+    [:div {:attr "world"}]))
+
+  (run-log
+   (diff-nodes
+    nil
+    [:div {}]))
+
+  (run-log
+   (diff-nodes
+    [:div {}]
+    [:div {}]))
+
+  (run-log
+   (diff-nodes
+    nil
+    [:div {:attr "hello"}]))
+
+  (run-log
+   (diff-nodes
+    [:div {:attr "hello"}]
+    nil))
+
+  (run-log
+   (diff-nodes
+    nil
+    [:div {} [:h1 {}]]))
+
+  (run-log
+   (diff-nodes
+    [:div {}]
+    [:div {} [:h1 {}]]))
+
+  (run-log
+   (diff-nodes
+    [:div {} [:h1 "h1.text"]]
+    [:div {}]))
+
+  (run-log
+   (diff-nodes
+    [:div {}]
+    [:div {:attr "hello"}]))
+
+  (run-log
+   (diff-nodes
+    [:div {:attr "hello"}]
+    [:div {}]))
+
+  (run-log
+   (diff-nodes
+    [:div {:attr "hello"}]
+    [:div {:attr "world"}]))
+
+  (run-log
+   (diff-nodes
+    [:div {:attr "hello"}]
+    [:div {:attr "hello"}]))
+
+  (run-log
+   (diff-nodes
+    [:div {:attr "value"} [:h1 "h1.text"] [:h2 "h2.text"]]
+    [:div {:text "hello"} [:h1 "h1.text"]]))
+
+  (run-log
+   (diff-nodes
+    [:div {:text "hello"} [:h1 "h1.text"]]
+    [:div {:attr "value"} [:h1 "h1.text"] [:h2 "h2.text"]]))
+
+  (run-log
+   (diff-nodes
+    [:div {:text "hello"} [:h1 "h1.text"] [:h2 "h2.text"]]
+    [:div {:attr "value"} [:h2 "h2.text"] [:h3 "h3.text"]]))
+
+  (defmacro run-log [& body]
+    `(do
+       (reset! log [])
+       ~@body
+       @log)))
+
+(comment
+  (deftest a-test
+    (testing "FIXME, I fail."
+      (is (= 0 0)))))
