@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [atom])
   (:require [freactive.core :as r]
             [freactive.dom :as dom]
-            [tag-game-fw.domain :as d])
+            [tag-game-fw.domain :as d]
+            [tag-game-fw.diff-js :as diffjs])
   (:require-macros [freactive.macros :refer [rx]]))
 
 (defonce app-state (r/atom (d/gen-valid-tag-game)))
@@ -27,7 +28,7 @@
    [:div {:id "game-field"}]
    (map-indexed view-item db)))
 
-(dom/mount!
- (.getElementById js/document "root")
- (let [db (r/cursor app-state identity)]
-   (rx (view @db))))
+;; (dom/mount!
+;;  (.getElementById js/document "root")
+;;  (let [db (r/cursor app-state identity)]
+;;    (rx (view @db))))
