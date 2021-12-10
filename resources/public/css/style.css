@@ -14,7 +14,7 @@ body {
     -webkit-user-select: none;
 }
 
-#game-field {
+.game-field {
     display: grid;
     gap: 0.9vmin;
     grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -24,7 +24,7 @@ body {
     width: 100vmin;
 }
 
-#game-field button {
+.game-field__item {
     margin: 0px;
     background: #4676D7;
     border-radius: 5px;
@@ -33,10 +33,10 @@ body {
     font-size: 5vmin;
 }
 
-#game-field > button:hover {
+.game-field__item:hover {
     background: #1d49aa;
 }
 
-#game-field > button.disabled {
+.game-field__item.disabled {
     visibility: hidden;
 }

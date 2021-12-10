@@ -14,7 +14,7 @@
   (create-node [_ name child-ctx])
   (attach-node [_ ctx i node]))
 
-(defn diff-nodes [render a b ctx i]
+(defn- diff-nodes-inner [render a b ctx i]
   (if (= (get-tag-name a) (get-tag-name b))
     (let [a-attr (try-get-attrs a)
           b-attr (try-get-attrs b)]
@@ -42,3 +42,8 @@
      (get b child-i)
      (create-child-ctx ctx i)
      (- child-i 2))))
+
+(defn diff [render a b]
+  (println "LOG: === START DIFF ===")
+  (diff-nodes-inner render a b {:id "root"} 0)
+  (println "LOG: === END DIFF ==="))

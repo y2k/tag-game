@@ -1,12 +1,10 @@
 (ns tag-game-fw.core
-  (:refer-clojure :exclude [atom])
-  (:require [freactive.core :as r]
-            [freactive.dom :as dom]
-            [tag-game-fw.domain :as d]
-            [tag-game-fw.diff-js :as diffjs])
+  (:require [tag-game-fw.domain :as d]
+            [tag-game-fw.diff-js :as diffjs]
+            [tag-game-fw.diff :as diff])
   (:require-macros [freactive.macros :refer [rx]]))
 
-(defonce app-state (r/atom (d/gen-valid-tag-game)))
+(defonce app-state (atom (d/gen-valid-tag-game)))
 
 (defn handleclick [i]
   (swap!
@@ -20,15 +18,27 @@
 
 (defn view-item [i x]
   [:button
-   {:class (if (= x 0) "disabled" "enable")
-    :on-click (fn [] (handleclick i))} (str x)])
+   {:className (str "game-field__item " (if (= x 0) "disabled" "enable"))
+    :innerText (str x)
+    :onclick (fn [] (handleclick i))}])
 
 (defn view [db]
   (into
-   [:div {:id "game-field"}]
+   [:div {:className "game-field"}]
    (map-indexed view-item db)))
 
-;; (dom/mount!
-;;  (.getElementById js/document "root")
-;;  (let [db (r/cursor app-state identity)]
-;;    (rx (view @db))))
+(def current-vdom (atom nil))
+
+(defn render-view [db]
+  (reset! current-vdom (view db)))
+
+(add-watch app-state :key (fn [_ _ _ db] (render-view db)))
+
+(add-watch
+ current-vdom
+ :renderer
+ (fn [_ _ o n]
+   (if (not (= o n))
+     (diff/diff (diffjs/JsRenderer.) o n))))
+
+(render-view @app-state)
