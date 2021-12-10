@@ -1,8 +1,7 @@
 (ns tag-game-fw.core
   (:require [tag-game-fw.domain :as d]
             [tag-game-fw.diff-js :as diffjs]
-            [tag-game-fw.diff :as diff])
-  (:require-macros [freactive.macros :refer [rx]]))
+            [tag-game-fw.diff :as diff]))
 
 (defonce app-state (atom (d/gen-valid-tag-game)))
 
@@ -20,7 +19,7 @@
   [:button
    {:className (str "game-field__item " (if (= x 0) "disabled" "enable"))
     :innerText (str x)
-    :onclick (fn [] (handleclick i))}])
+    :onclick (diffjs/with-tag (fn [] (handleclick i)) {::click i})}])
 
 (defn view [db]
   (into

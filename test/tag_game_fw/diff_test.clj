@@ -18,7 +18,7 @@
   (attach-node [_ ctx i node]
     (swap! log (fn [l] (conj l (str "an(" node " to #" (:id ctx) ")"))))))
 
-(defn diff-nodes [a b] (diff/diff-nodes (LogRenderer.) a b {:id "root"} 0))
+(defn diff-nodes [a b] (diff/diff (LogRenderer.) a b))
 
 (comment
 

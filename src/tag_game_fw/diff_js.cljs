@@ -2,6 +2,10 @@
   (:require [clojure.data :as data]
             [tag-game-fw.diff :as diff]))
 
+(defn with-tag [f tag]
+  (set! (.-tag f) tag)
+  f)
+
 (deftype JsRenderer []
   diff/Renderer
   (remove-attr [_ ctx k]

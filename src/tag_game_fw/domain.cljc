@@ -1,5 +1,4 @@
-(ns tag-game-fw.domain
-  (:refer-clojure :exclude [atom]))
+(ns tag-game-fw.domain)
 
 (defn check-valid-tags [xs]
   (->>
