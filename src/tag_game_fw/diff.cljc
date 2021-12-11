@@ -14,9 +14,10 @@
 (defn- get-tag-name [n] (get n 0))
 (defn- create-child-ctx [parent-ctx i] {:id (str (:id parent-ctx) i)})
 (defn- equals-ext [a b]
-  (if (and (some? a) (some? (.-tag b)))
-    (= (.-tag a) (.-tag b))
-    (= a b)))
+  #?(:clj  (= a b)
+     :cljs (if (and (some? a) (some? (.-tag b)))
+             (= (.-tag a) (.-tag b))
+             (= a b))))
 
 (defn- diff-nodes-inner [render a b ctx i]
   (if (= (get-tag-name a) (get-tag-name b))
