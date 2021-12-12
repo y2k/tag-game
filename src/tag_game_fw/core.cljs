@@ -3,28 +3,39 @@
             [tag-game-fw.diff-js :as diffjs]
             [tag-game-fw.diff :as diff]))
 
-(defonce app-state (atom (d/gen-valid-tag-game)))
+(defonce app-state (atom {:field (d/gen-valid-tag-game)}))
 
 (defn handleclick [i]
   (swap!
    app-state
-   #(->>
-     %
-     (d/try-swap i -1 0)
-     (d/try-swap i 1 0)
-     (d/try-swap i 0 -1)
-     (d/try-swap i 0 1))))
+   (fn [db]
+     (let [field (:field db)
+           new-field (->>
+                      field
+                      (d/try-swap i -1 0)
+                      (d/try-swap i 1 0)
+                      (d/try-swap i 0 -1)
+                      (d/try-swap i 0 1))]
+       (assoc db :field new-field :from (.indexOf field 0) :to (.indexOf new-field 0))))))
 
-(defn view-item [i x]
+(defn view-item [i x from to]
   [:button
-   {:className (str "game-field__item " (if (= x 0) "disabled" "enable"))
-    :innerText (str x)
+   {:className
+    (cond
+      (and (= i from) (= 1 (- from to))) "game-field__item from-left"
+      (and (= i from) (= -1 (- from to))) "game-field__item from-right"
+      (and (= i from) (= 4 (- from to))) "game-field__item from-top"
+      (and (= i from) (= -4 (- from to))) "game-field__item from-bottom"
+      (= i to) "game-field__item empty"
+      (and (= 0 x) (nil? from)) "game-field__item empty"
+      :else "game-field__item")
+    :innerText (if (= x 0) "" (str x))
     :onclick (diffjs/with-tag (fn [] (handleclick i)) {::click i})}])
 
 (defn view [db]
   (into
    [:div {:className "game-field"}]
-   (map-indexed view-item db)))
+   (map-indexed (fn [i x] (view-item i x (:from db) (:to db))) (:field db))))
 
 (def current-vdom (atom nil))
 

@@ -31,12 +31,50 @@ body {
     border: 0;
     color: #fff;
     font-size: 5vmin;
+    position: relative;
+    animation-fill-mode: none;
 }
 
-.game-field__item:hover {
-    background: #1d49aa;
+@keyframes from-left {
+    0% { left: calc(-100% - 0.9vmin); }
+    100% { left: 0; }
 }
 
-.game-field__item.disabled {
-    visibility: hidden;
+@keyframes from-top {
+    0% { top: calc(-100% - 0.9vmin); }
+    100% { top: 0; }
+}
+
+@keyframes from-bottom {
+    0% { top: calc(100% + 0.9vmin); z-index: 1000; }
+    100% { top: 0; z-index: 0; }
+}
+
+@keyframes from-right {
+    0% { left: calc(100% + 0.9vmin); z-index: 1000; }
+    100% { left: 0; z-index: 0; }
+}
+
+.game-field__item.from-left {
+    animation: from-left 300ms ease 1;
+    animation-fill-mode: forwards;
+}
+
+.game-field__item.from-right {
+    animation: from-right 300ms ease 1;
+    animation-fill-mode: forwards;
+}
+
+.game-field__item.from-top {
+    animation: from-top 300ms ease 1;
+    animation-fill-mode: forwards;
+}
+
+.game-field__item.from-bottom {
+    animation: from-bottom 300ms ease 1;
+    animation-fill-mode: forwards;
+}
+
+.game-field__item.empty {
+    background: white;
 }
