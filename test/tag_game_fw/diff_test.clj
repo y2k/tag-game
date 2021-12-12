@@ -14,16 +14,13 @@
     (str name "#" (:id child-ctx)))
   (attach-node [_ ctx i node] (swap! log (fn [l] (conj l (str "an(" node " to #" (:id ctx) ")"))))))
 
-(defn diff-nodes [a b] (diff/diff (LogRenderer.) a b))
-
-(defmacro run-log [& body]
-  `(do
-     (reset! log [])
-     ~@body
-     @log))
+(defn run-diff-asset [a b]
+  (reset! log [])
+  (diff/diff (LogRenderer.) a b)
+  @log)
 
 (deftest diff-tests
-  (are [a b expected] (= (run-log (diff-nodes a b)) expected)
+  (are [a b expected] (= (run-diff-asset a b) expected)
     [:div {}] [:div {}] []
     [:div {:attr "hello"}] [:div {:attr "hello"}] []
     [:div {:attr "hello"}] [:div {}] ["ra(#root0 :attr)"]
