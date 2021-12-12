@@ -7,7 +7,22 @@
     <meta name="viewport"
         content="minimum-scale=1, initial-scale=1, width=device-width, minimal-ui, user-scalable=no" />
     <link href="css/style.css" rel="stylesheet" type="text/css">
-    <link rel="icon" href="https://clojurescript.org/images/cljs-logo-icon-32.png">
+    <link rel="icon" href="images/icon.png">
+    <link rel="manifest" href="manifest.webmanifest" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/UpUp/1.1.0/upup.min.js"></script>
+    <script>
+        if (window.location.hostname != "localhost")
+            UpUp.start({
+                'cache-version': 4,
+                'assets': [
+                    'index.html',
+                    'js/compiled/tag_game_fw.js',
+                    'css/style.css',
+                    'images/icon.png'
+                ],
+                'service-worker-url': 'upup.sw.min.js'
+            });
+    </script>
 </head>
 
 <body>
