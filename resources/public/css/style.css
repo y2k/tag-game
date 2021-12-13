@@ -1,3 +1,7 @@
+:root {
+    --animation-duration: 200ms
+}
+
 html {
     overflow: hidden;
     height: 100%;
@@ -56,22 +60,22 @@ body {
 }
 
 .game-field__item.from-left {
-    animation: from-left 300ms ease 1;
+    animation: from-left var(--animation-duration) ease 1;
     animation-fill-mode: forwards;
 }
 
 .game-field__item.from-right {
-    animation: from-right 300ms ease 1;
+    animation: from-right var(--animation-duration) ease 1;
     animation-fill-mode: forwards;
 }
 
 .game-field__item.from-top {
-    animation: from-top 300ms ease 1;
+    animation: from-top var(--animation-duration) ease 1;
     animation-fill-mode: forwards;
 }
 
 .game-field__item.from-bottom {
-    animation: from-bottom 300ms ease 1;
+    animation: from-bottom var(--animation-duration) ease 1;
     animation-fill-mode: forwards;
 }
 
