@@ -12,7 +12,10 @@
   (let [attr (get node 1)]
     (if (map? attr) attr {})))
 (defn- get-tag-name [n] (get n 0))
-(defn- create-child-ctx [parent-ctx i] {:id (str (:id parent-ctx) i)})
+(def chars (vec (map char (range 65 123))))
+(defn- create-child-ctx [parent-ctx i]
+  (let [parent-id (:id parent-ctx)]
+    {:id (str (if (= "root" parent-id) "" parent-id) (get chars i))}))
 (defn- equals-ext [a b]
   #?(:clj  (= a b)
      :cljs (if (and (some? a) (some? (.-tag b)))
@@ -45,6 +48,4 @@
     (diff-nodes-inner render (get a child-i) (get b child-i) (create-child-ctx ctx i) (- child-i 2))))
 
 (defn diff [render a b]
-  (println "LOG: === START DIFF ===")
-  (diff-nodes-inner render a b {:id "root"} 0)
-  (println "LOG: === END DIFF ==="))
+  (diff-nodes-inner render a b {:id "root"} 0))
