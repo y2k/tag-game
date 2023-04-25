@@ -1,5 +1,15 @@
 :root {
-    --animation-duration: 200ms
+    --animation-duration: 200ms;
+
+    --color-white: hsl(0, 0%, 100%);
+    --color-blue: hsl(220, 64%, 56%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-white: hsl(0, 0%, 10%);
+        --color-blue: hsl(220, 50%, 35%);
+    }
 }
 
 html {
@@ -9,7 +19,7 @@ html {
 
 body {
     align-items: center;
-    background-color: white;
+    background-color: var(--color-white);
     display: flex;
     height: 100%;
     justify-content: center;
@@ -30,10 +40,10 @@ body {
 
 .game-field__item {
     margin: 0px;
-    background: #4676D7;
+    background: var(--color-blue);
     border-radius: 5px;
     border: 0;
-    color: #fff;
+    color: var(--color-white);
     font-size: 5vmin;
     position: relative;
     animation-fill-mode: none;
@@ -80,5 +90,5 @@ body {
 }
 
 .game-field__item.empty {
-    background: white;
+    background: var(--color-white);
 }
