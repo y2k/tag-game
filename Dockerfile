@@ -18,6 +18,4 @@ COPY resources resources
 
 FROM alpine
 
-COPY --from=build /app/resources/public /app
-
-CMD cp -r /app/* /build_result
+COPY --from=build /app/resources/public /build_result
