@@ -44,7 +44,7 @@ body {
     border-radius: 5px;
     border: 0;
     color: var(--color-white);
-    font-size: 5vmin;
+    font-size: 6vmin;
     position: relative;
     animation-fill-mode: none;
 }
