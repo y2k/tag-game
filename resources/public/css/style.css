@@ -1,14 +1,14 @@
 :root {
     --animation-duration: 200ms;
 
-    --color-white: hsl(0, 0%, 100%);
-    --color-blue: hsl(220, 65%, 55%);
+    --color-white: #e4d5d1;
+    --color-blue: #80605d;
 }
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --color-white: hsl(0, 0%, 10%);
-        --color-blue: hsl(220, 50%, 40%);
+        --color-white: #281f1f;
+        --color-blue: #c1a79f;
     }
 }
 
@@ -44,7 +44,8 @@ body {
     border-radius: 5px;
     border: 0;
     color: var(--color-white);
-    font-size: 6vmin;
+    font-size: 8vmin;
+    font-family: Arial, Helvetica, sans-serif;
     position: relative;
     animation-fill-mode: none;
 }
