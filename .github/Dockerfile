@@ -16,6 +16,5 @@ RUN lein cljsbuild once min
 
 COPY resources resources
 
-FROM alpine
-
-COPY --from=build /app/resources/public /build_result
+FROM scratch
+COPY --from=build /app/resources/public .
