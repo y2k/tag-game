@@ -16,6 +16,7 @@ COPY test test
 COPY resources resources
 
 RUN lein test && \
+  lein clean && \
   lein cljsbuild once min
 
 FROM scratch

@@ -10,3 +10,9 @@ jobs:
     - run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u y2khub --password-stdin
     - run: make docker_image
     - run: docker push y2khub/tag_game
+    - uses: peter-evans/repository-dispatch@v4
+      with:
+        token: ${{ secrets.PAT }}
+        repository: y2k/github_page_builder
+        event-type: image_updated
+        client-payload: '{"image": "tag_game"}'

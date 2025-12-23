@@ -4,14 +4,14 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :min-lein-version "2.9.1"
+  :min-lein-version "2.12.0"
 
-  :dependencies [[org.clojure/clojure "1.10.0"]
-                 [org.clojure/clojurescript "1.10.773"]
-                 [org.clojure/core.async  "0.4.500"]]
+  :dependencies [[org.clojure/clojure "1.12.0"]
+                 [org.clojure/clojurescript "1.12.42"]
+                 [org.clojure/core.async  "1.8.741"]]
 
   :plugins [[lein-figwheel "0.5.20"]
-            [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]
+            [lein-cljsbuild "1.1.8" :exclusions [[org.clojure/clojure]]]]
 
   :source-paths ["src"]
 
@@ -35,9 +35,9 @@
 
   :figwheel {:css-dirs ["resources/public/css"]}
 
-  :profiles {:dev {:dependencies [[binaryage/devtools "1.0.0"]
+  :profiles {:dev {:dependencies [[binaryage/devtools "1.0.7"]
                                   [figwheel-sidecar "0.5.20"]
-                                  [cider/piggieback "0.5.3"]]
+                                  [cider/piggieback "0.6.1"]]
                    :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}
                    :source-paths ["src" "dev"]
                    :clean-targets ^{:protect false} ["resources/public/js/compiled"
